@@ -1,4 +1,4 @@
-import { whopServer } from '@/lib/whop'
+import { whop } from '@/lib/whop'
 import DashboardClient from './DashboardClient'
 
 export default async function DashboardPage({ params }) {
@@ -6,23 +6,21 @@ export default async function DashboardPage({ params }) {
   // This ensures each business owner only sees their own data
   const { companyId } = params
 
-  // Fetch company data server-side using the URL companyId
+  // Fetch company data server-side using Whop SDK
   let companyData = null
   let error = null
 
   try {
-    // Fetch company information from Whop
-    // Note: The API key is tied to the company, so this retrieves the company for the API key
-    // The companyId from URL is used for verification and routing
-    const response = await whopServer.companies.retrieveCompany({})
-    companyData = response
+    // Fetch company information using Whop SDK
+    const response = await whop.GET('/company')
+    companyData = response.data
 
     // Verify the company ID matches the URL parameter
-    if (companyData.id !== companyId) {
+    if (companyData && companyData.id !== companyId) {
       throw new Error('Company ID mismatch - URL does not match API key company')
     }
   } catch (err) {
-    error = err.message
+    error = err.message || 'Failed to fetch company data'
     console.error('Error fetching company:', err)
   }
 

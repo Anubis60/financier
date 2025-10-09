@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@whop-sdk/core": "^1.0.0",
+    "@whop/api": "^0.0.51",
     "autoprefixer": "^10.4.21",
     "next": "15.0.2",
     "react": "^18",
