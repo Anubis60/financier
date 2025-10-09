@@ -11,11 +11,8 @@ export default async function DashboardPage({ params }) {
   let error = null
 
   try {
-    // Use SDK scoped to the company from URL
-    const companyWhop = whop.withCompany(companyId)
-
-    // Fetch company information
-    const response = await companyWhop.getCompany()
+    // Fetch company information using SDK
+    const response = await whop.company.getCompany({ companyId })
     companyData = response
   } catch (err) {
     error = err.message || 'Failed to fetch company data'
