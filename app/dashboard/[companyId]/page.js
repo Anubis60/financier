@@ -1,22 +1,43 @@
-import { whop } from '@/lib/whop'
+'use client'
+
+import React, { use, useEffect, useState } from 'react'
 import DashboardClient from './DashboardClient'
 
-export default async function DashboardPage({ params }) {
-  // IMPORTANT: Always use companyId from URL params, never from env variables
-  // This ensures each business owner only sees their own data
-  const { companyId } = params
+export default function DashboardPage({ params }) {
+  const { companyId } = use(params)
+  const [companyData, setCompanyData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  // Fetch company data server-side using Whop SDK
-  let companyData = null
-  let error = null
+  useEffect(() => {
+    async function fetchCompanyData() {
+      try {
+        const response = await fetch(`/api/company?companyId=${companyId}`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch company data')
+        }
+        const data = await response.json()
+        setCompanyData(data)
+      } catch (err) {
+        setError(err.message || 'Failed to fetch company data')
+        console.error('Error fetching company:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  try {
-    // Fetch company information using SDK
-    const response = await whop.company.getCompany({ companyId })
-    companyData = response
-  } catch (err) {
-    error = err.message || 'Failed to fetch company data'
-    console.error('Error fetching company:', err)
+    fetchCompanyData()
+  }, [companyId])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
