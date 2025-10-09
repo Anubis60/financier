@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@whop-sdk/core": "^1.0.0",
+    "autoprefixer": "^10.4.21",
     "next": "15.0.2",
     "react": "^18",
     "react-dom": "^18"
