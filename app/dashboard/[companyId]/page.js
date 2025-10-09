@@ -11,9 +11,16 @@ export default async function DashboardPage({ params }) {
   let error = null
 
   try {
-    // Fetch company information from Whop using the dynamic companyId
-    const response = await whopServer.companies.retrieve(companyId)
+    // Fetch company information from Whop
+    // Note: The API key is tied to the company, so this retrieves the company for the API key
+    // The companyId from URL is used for verification and routing
+    const response = await whopServer.companies.retrieveCompany({})
     companyData = response
+
+    // Verify the company ID matches the URL parameter
+    if (companyData.id !== companyId) {
+      throw new Error('Company ID mismatch - URL does not match API key company')
+    }
   } catch (err) {
     error = err.message
     console.error('Error fetching company:', err)
