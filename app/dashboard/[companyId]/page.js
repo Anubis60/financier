@@ -11,14 +11,12 @@ export default async function DashboardPage({ params }) {
   let error = null
 
   try {
-    // Fetch company information using Whop SDK
-    const response = await whop.GET('/company')
-    companyData = response.data
+    // Use SDK scoped to the company from URL
+    const companyWhop = whop.withCompany(companyId)
 
-    // Verify the company ID matches the URL parameter
-    if (companyData && companyData.id !== companyId) {
-      throw new Error('Company ID mismatch - URL does not match API key company')
-    }
+    // Fetch company information
+    const response = await companyWhop.getCompany()
+    companyData = response
   } catch (err) {
     error = err.message || 'Failed to fetch company data'
     console.error('Error fetching company:', err)
