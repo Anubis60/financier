@@ -30,8 +30,15 @@ export default function DashboardClient({ companyId, companyData, error }) {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">
-                {companyData?.name || companyId}
+              {companyData?.logo?.sourceUrl && (
+                <img
+                  src={companyData.logo.sourceUrl}
+                  alt={companyData.title || 'Company Logo'}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+              )}
+              <span className="text-sm font-medium text-gray-900">
+                {companyData?.title || companyId}
               </span>
             </div>
           </div>
@@ -90,8 +97,54 @@ export default function DashboardClient({ companyId, companyData, error }) {
         <div className="bg-white rounded-lg shadow p-6">
           {activeTab === 'overview' && (
             <div>
-              <h2 className="text-2xl font-bold mb-4">Dashboard Overview</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <h2 className="text-2xl font-bold mb-6">Dashboard Overview</h2>
+
+              {/* Company Info Card */}
+              {companyData && (
+                <div className="mb-8 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-6 border border-purple-100">
+                  <div className="flex items-start space-x-6">
+                    {companyData.logo?.sourceUrl && (
+                      <img
+                        src={companyData.logo.sourceUrl}
+                        alt={companyData.title || 'Company Logo'}
+                        className="w-20 h-20 rounded-lg object-cover shadow-md"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                        {companyData.title}
+                      </h3>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-gray-600">Company ID:</span>
+                          <span className="ml-2 font-mono text-gray-900">{companyData.id}</span>
+                        </div>
+                        {companyData.route && (
+                          <div>
+                            <span className="text-gray-600">Route:</span>
+                            <span className="ml-2 text-gray-900">/{companyData.route}</span>
+                          </div>
+                        )}
+                        {companyData.industryType && (
+                          <div>
+                            <span className="text-gray-600">Industry:</span>
+                            <span className="ml-2 text-gray-900 capitalize">{companyData.industryType.replace(/_/g, ' ')}</span>
+                          </div>
+                        )}
+                        {companyData.businessType && (
+                          <div>
+                            <span className="text-gray-600">Business Type:</span>
+                            <span className="ml-2 text-gray-900 capitalize">{companyData.businessType.replace(/_/g, ' ')}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <StatCard
                   title="Active Members"
                   value="0"
@@ -111,17 +164,6 @@ export default function DashboardClient({ companyId, companyData, error }) {
                   trend="up"
                 />
               </div>
-
-              {companyData && (
-                <div className="mt-6">
-                  <h3 className="text-lg font-semibold mb-2">Company Info</h3>
-                  <div className="bg-gray-50 p-4 rounded-md">
-                    <pre className="text-sm overflow-auto">
-                      {JSON.stringify(companyData, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
